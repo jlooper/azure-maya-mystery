@@ -5,11 +5,12 @@
         <label
           class="mr-3 float-left block tracking-wide text-white text-xs font-bold mb-2"
           for="grid-state"
-        >{{ $t('level') }}</label>
-        <div class="relative">
+          >{{ $t("level") }}</label
+        >
+        <div class="relative" @keyup="goToLevel($event)">
           <select
             role="listbox"
-            @change="goToLevel($event)"
+            @click="goToLevel($event)"
             class="block appearance-none w-full border border-gray-200 py-3 px-4 pr-8 rounded leading-tight"
             id="level"
           >
@@ -25,7 +26,9 @@
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
             </svg>
           </div>
         </div>
@@ -35,11 +38,12 @@
         <label
           class="mr-3 float-left block tracking-wide text-white text-xs font-bold mb-2"
           for="grid-state"
-        >{{ $t('language') }}</label>
-        <div class="relative">
+          >{{ $t("language") }}</label
+        >
+        <div class="relative" @keyup="setLanguage($event)">
           <select
             role="listbox"
-            @change="setLanguage($event)"
+            @click="setLanguage($event)"
             class="block appearance-none w-full border border-gray-200 py-3 px-4 pr-8 rounded leading-tight"
             id="level"
           >
@@ -56,13 +60,17 @@
               xmlns="http://www.w3.org/2000/svg"
               viewBox="0 0 20 20"
             >
-              <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
+              <path
+                d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
+              />
             </svg>
           </div>
         </div>
       </div>
     </div>
-    <p class="text-3xl pb-5 pt-5 ml-5 text-sans">{{ $page.frontmatter.title }}</p>
+    <p class="text-3xl pb-5 pt-5 ml-5 text-sans">
+      {{ $page.frontmatter.title }}
+    </p>
     <div class="p-5 bg-white m-5 mt-6 rounded">
       <Content />
     </div>
@@ -83,27 +91,31 @@ export default {
 
   methods: {
     goToLevel(event) {
-      if (event.target.value == "" || event.target.value == "1") {
-        this.$router.push({ path: "/" });
-      } else if (event.target.value == "2") {
-        this.$router.push({ path: "/pyramid/" + getLocale() + "/2" });
-      } else {
-        this.$router.push({ path: "/pyramid/" + getLocale() + "/3" });
+      if (event.keyCode != 27) {
+        if (event.target.value == "" || event.target.value == "1") {
+          this.$router.push({ path: "/" });
+        } else if (event.target.value == "2") {
+          this.$router.push({ path: "/pyramid/" + getLocale() + "/2" });
+        } else {
+          this.$router.push({ path: "/pyramid/" + getLocale() + "/3" });
+        }
       }
     },
     setLanguage(event) {
-      var lang = event.target.value;
-      setLocale(lang);
-      EventBus.$emit("lang_changed", lang);
-      var currPath = this.$route.matched[0].path;
-      var newPath = currPath.replace(/es|pt|en|fr/gi, lang);
-      console.log(newPath, currPath);
-      //check to make sure you're not already on this page
-      if (newPath == "") {
-        this.$router.push({ path: "/pyramid/" + getLocale() + "/1" });
-      } else {
-        if (currPath !== newPath) {
-          this.$router.push({ path: newPath });
+      if (event.keyCode != 27) {
+        var lang = event.target.value;
+        setLocale(lang);
+        EventBus.$emit("lang_changed", lang);
+        var currPath = this.$route.matched[0].path;
+        var newPath = currPath.replace(/es|pt|en|fr/gi, lang);
+        console.log(newPath, currPath);
+        //check to make sure you're not already on this page
+        if (newPath == "") {
+          this.$router.push({ path: "/pyramid/" + getLocale() + "/1" });
+        } else {
+          if (currPath !== newPath) {
+            this.$router.push({ path: newPath });
+          }
         }
       }
     },
