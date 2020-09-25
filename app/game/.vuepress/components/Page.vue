@@ -2,7 +2,11 @@
   <div class="prompt">
     <span class="font-bold" v-if="show">{{ instructions }}</span>
     <div class="page-nav" v-if="show">
-      <router-link :to="link || './'">{{ action }}</router-link>
+      <router-link
+        aria-label="Continue your journey on the next page"
+        :to="link || './'"
+        >{{ action }}</router-link
+      >
     </div>
   </div>
 </template>
@@ -12,7 +16,7 @@ import {
   getUID,
   setUID,
   hasUID,
-  setSessionTicket
+  setSessionTicket,
 } from "@theme/utils/helpers";
 import axios from "axios";
 import { EventBus } from "@theme/utils/event-bus";
@@ -25,7 +29,7 @@ export default {
   data() {
     return {
       show: false,
-      link: this.url
+      link: this.url,
     };
   },
   methods: {
@@ -38,18 +42,18 @@ export default {
     },
     goToRoom(url) {
       this.$router.replace({ path: url });
-    }
+    },
   },
   created() {
-    EventBus.$on("item_added", id => {
+    EventBus.$on("item_added", (id) => {
       this.getInventory(id);
     });
 
-    EventBus.$on("showResult", id => {
+    EventBus.$on("showResult", (id) => {
       this.getInventory(id);
     });
 
-    EventBus.$on("lang_changed", lang => (this.$i18n.locale = lang));
+    EventBus.$on("lang_changed", (lang) => (this.$i18n.locale = lang));
 
     //initially, set home page to show followup
     this.getInventory(1);
@@ -59,21 +63,21 @@ export default {
     axios
       .post("https://maya-mystery-api.azurewebsites.net/api/loginAnon", {
         id: getUID(),
-        createAccount: hasUID()
+        createAccount: hasUID(),
       })
-      .then(response => {
+      .then((response) => {
         console.log(response);
         if (response.data.errorMessage == null) {
           setSessionTicket(response.data.SessionTicket);
         }
       })
-      .catch(function(error) {
+      .catch(function (error) {
         console.log(error);
       });
   },
   beforeDestroy() {
     EventBus.$off("lang_changed");
-  }
+  },
 };
 </script>
 <style lang="stylus">
